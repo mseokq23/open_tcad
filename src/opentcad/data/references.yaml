@@ -1,0 +1,110 @@
+# Machine-readable bibliography. Every `source:` used in data/ or specs/ must be an id here.
+# Rules: docs/literature-policy.md. Bibliographic metadata is checked with
+#   python scripts/check_citations.py --online      (Crossref lookup for every DOI)
+# `metadata_check` records how the bibliographic fields themselves were confirmed.
+schema: opentcad.references/v1
+references:
+  codata2022:
+    kind: dataset
+    title: "CODATA Internationally Recommended 2022 Values of the Fundamental Physical Constants (complete listing)"
+    authors: ["NIST Physical Measurement Laboratory"]
+    year: 2024
+    url: "https://physics.nist.gov/cuu/Constants/Table/allascii.txt"
+    accessed: "2026-10-19"
+    metadata_check: {method: downloaded-and-read, date: "2026-10-19", by: bootstrap}
+
+  ioffe-nsm-si-bandstr:
+    kind: web
+    title: "NSM Archive - Silicon (Si) - Band structure and carrier concentration"
+    authors: ["Ioffe Physico-Technical Institute"]
+    url: "https://www.ioffe.ru/SVA/NSM/Semicond/Si/bandstr.html"
+    accessed: "2026-10-19"
+    notes: "Secondary compilation; each value on the page cites its own primary source. Prefer the primary source when available."
+    metadata_check: {method: page-read, date: "2026-10-19", by: bootstrap}
+
+  ioffe-nsm-si-basic:
+    kind: web
+    title: "NSM Archive - Silicon (Si) - Basic parameters"
+    authors: ["Ioffe Physico-Technical Institute"]
+    url: "https://www.ioffe.ru/SVA/NSM/Semicond/Si/basic.html"
+    accessed: null
+    notes: "Could not be read by automated fetch (robots.txt). Needs a human-read or a PDF/print copy in literature/pdfs/."
+    metadata_check: {method: none, date: null, by: null}
+
+  sze-ng-2007:
+    kind: book
+    title: "Physics of Semiconductor Devices"
+    edition: "3rd"
+    authors: ["S. M. Sze", "K. K. Ng"]
+    year: 2007
+    publisher: "Wiley-Interscience"
+    isbn: "9780471143239"
+    metadata_check: {method: library-catalog, date: "2026-10-19", by: bootstrap}
+
+  selberherr-1984:
+    kind: book
+    title: "Analysis and Simulation of Semiconductor Devices"
+    authors: ["S. Selberherr"]
+    year: 1984
+    publisher: "Springer Vienna"
+    doi: "10.1007/978-3-7091-8752-4"
+    isbn: "9783709187524"
+    metadata_check: {method: crossref, date: "2026-10-19", by: bootstrap}
+
+  scharfetter-gummel-1969:
+    kind: article
+    title: "Large-signal analysis of a silicon Read diode oscillator"
+    authors: ["D. L. Scharfetter", "H. K. Gummel"]
+    year: 1969
+    venue: "IEEE Transactions on Electron Devices"
+    volume: 16
+    issue: 1
+    pages: "64-77"
+    doi: "10.1109/T-ED.1969.16566"
+    metadata_check: {method: crossref, date: "2026-10-19", by: bootstrap}
+
+  shockley-read-1952:
+    kind: article
+    title: "Statistics of the Recombinations of Holes and Electrons"
+    authors: ["W. Shockley", "W. T. Read"]
+    year: 1952
+    venue: "Physical Review"
+    volume: 87
+    issue: 5
+    pages: "835-842"
+    doi: "10.1103/PhysRev.87.835"
+    metadata_check: {method: crossref, date: "2026-10-19", by: bootstrap}
+
+  hall-1952:
+    kind: article
+    title: "Electron-Hole Recombination in Germanium"
+    authors: ["R. N. Hall"]
+    year: 1952
+    venue: "Physical Review"
+    volume: 87
+    issue: 2
+    pages: "387"
+    doi: "10.1103/PhysRev.87.387"
+    metadata_check: {method: crossref, date: "2026-10-19", by: bootstrap}
+
+  masetti-1983:
+    kind: article
+    title: "Modeling of carrier mobility against carrier concentration in arsenic-, phosphorus-, and boron-doped silicon"
+    authors: ["G. Masetti", "M. Severi", "S. Solmi"]
+    year: 1983
+    venue: "IEEE Transactions on Electron Devices"
+    volume: 30
+    issue: 7
+    pages: "764-769"
+    doi: "10.1109/T-ED.1983.21207"
+    metadata_check: {method: crossref, date: "2026-10-19", by: bootstrap}
+
+  devsim-manual-2-11:
+    kind: web
+    title: "DEVSIM Manual, release 2.11"
+    authors: ["DEVSIM LLC"]
+    year: 2026
+    url: "https://devsim.net"
+    accessed: "2026-10-19"
+    notes: "Implementation reference for DEVSIM commands; not a source for physical parameter values."
+    metadata_check: {method: page-read, date: "2026-10-19", by: bootstrap}

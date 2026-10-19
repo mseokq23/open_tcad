@@ -1,0 +1,36 @@
+# Physical constants used by Open TCAD.
+# Every entry follows docs/literature-policy.md: value + unit + source id + locator + status.
+# Source: NIST CODATA 2022 complete listing (reference id `codata2022`).
+schema: opentcad.constants/v1
+constants:
+  elementary_charge:
+    symbol: q
+    value: 1.602176634e-19
+    unit: C
+    exact: true
+    source: codata2022
+    locator: "Complete listing, row 'elementary charge' (exact)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+  boltzmann_constant:
+    symbol: k_B
+    value: 1.380649e-23
+    unit: J/K
+    exact: true
+    source: codata2022
+    locator: "Complete listing, row 'Boltzmann constant' (exact)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+  vacuum_permittivity:
+    symbol: eps_0
+    value: 8.8541878188e-12
+    unit: F/m
+    exact: false
+    uncertainty: 1.4e-21
+    source: codata2022
+    locator: "Complete listing, row 'vacuum electric permittivity'"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []

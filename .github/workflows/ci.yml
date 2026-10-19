@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev
+      - name: Citations, statuses and locators
+        run: uv run python scripts/check_citations.py
+      - name: Backlog consistency
+        run: uv run pytest -q tests/unit/test_agentlib.py
+
+  test:
+    name: test (${{ matrix.solver }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        solver: [mkl_pardiso, umfpack]
+    env:
+      OPENTCAD_SOLVER: ${{ matrix.solver }}
+      MKL_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev
+      - run: uv run opentcad info
+      - name: Unit and verification tests
+        run: uv run pytest -q -m "not gui" --junitxml=reports/junit-${{ matrix.solver }}.xml
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: junit-${{ matrix.solver }}
+          path: reports/junit-${{ matrix.solver }}.xml
+
+  gui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Qt runtime libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libegl1 libgl1 libxkbcommon0 libfontconfig1 libdbus-1-3
+      - run: uv sync --extra dev --extra gui
+      - run: uv run pytest -q -m gui
+        env:
+          QT_QPA_PLATFORM: offscreen
+      - run: uv run python scripts/snapshot_gui.py --out snapshots/main-window.png
+      - uses: actions/upload-artifact@v7
+        with:
+          name: gui-snapshots
+          path: snapshots/

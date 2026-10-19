@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opentcad"
+version = "0.0.1"
+description = "Open TCAD: a literature-grounded semiconductor device simulator with a GUI, built on DEVSIM"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.10,<3.14"
+authors = [{ name = "mseokq23" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+]
+dependencies = [
+  "devsim>=2.11,<3",
+  # DEVSIM needs BLAS/LAPACK at import time. MKL also provides the PARDISO direct solver.
+  # mkl 2026.x makes DEVSIM 2.11's PARDISO factorization fail (docs/known-issues.md, KI-001).
+  "mkl>=2024,<2026; sys_platform != 'darwin' and (platform_machine == 'x86_64' or platform_machine == 'AMD64')",
+  "numpy>=1.26",
+  "pyyaml>=6.0",
+  "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+mesh = ["gmsh>=4.11"]
+gui = ["PySide6>=6.6", "pyvista>=0.43", "pyvistaqt>=0.11", "pyqtgraph>=0.13"]
+dev = ["pytest>=8", "pytest-timeout>=2.3", "ruff>=0.6", "mypy>=1.10", "types-PyYAML"]
+
+[project.scripts]
+opentcad = "opentcad.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opentcad"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+timeout = 300
+markers = [
+  "verification: physics verification against analytic limits or cited references",
+  "slow: long-running simulations (excluded from the default quick run)",
+  "gui: needs a Qt platform plugin (run with QT_QPA_PLATFORM=offscreen)",
+  "requires_model(*model_ids): skip until these physics models are registered (verification first)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = [".claude/worktrees"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+# `ruff format` enforces the line length for code; long strings and URLs may exceed it.
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = true

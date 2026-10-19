@@ -1,0 +1,493 @@
+# Phase 2 backlog — model library, material sets, convergence automation, AC/transient, DOE.
+# Exit criteria: docs/roadmap.md. Same fields as phase1.yaml.
+# Model names below are *candidates to research*, not citations: the researcher finds and reads
+# the primary source, creates the reference with scripts/doi_lookup.py, and may propose a
+# different model with a justification in the spec.
+schema: opentcad.backlog/v1
+phase: 2
+milestone: "Phase 2"
+items:
+  # ── research: model specs ───────────────────────────────────────────────────
+  - id: P2-SPEC-001
+    title: "MOD-MOB-001: complete the Masetti doping-dependent mobility spec"
+    role: research
+    area: physics
+    type: spec
+    priority: high
+    depends: []
+    spec: MOD-MOB-001
+    notes: "The stub specs/models/MOD-MOB-001.md lists every TBD. Source: masetti-1983 (already in references.yaml)."
+    acceptance:
+      - "Equation and all parameters per dopant species with exact locators; values in silicon.yaml as extracted"
+      - "Edge-averaging choice for DEVSIM stated and justified"
+  - id: P2-SPEC-002
+    title: "MOD-MOB-002: high-field velocity saturation (e.g. Caughey-Thomas form)"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-MOB-002
+    notes: "Define the driving force used on Scharfetter-Gummel edges and its derivatives; Si electron/hole parameters with locators."
+    acceptance:
+      - "Equations, parameters, driving-force definition and validity range with locators"
+  - id: P2-SPEC-003
+    title: "MOD-MOB-003: transverse-field (surface) mobility degradation for inversion layers"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-MOB-003
+    notes: "Candidate: a Lombardi-type combination of bulk, acoustic-phonon and surface-roughness terms. Define the normal field at interfaces."
+    acceptance:
+      - "Equations, parameters, combination rule (Matthiessen) and how the normal field is computed on the mesh"
+  - id: P2-SPEC-004
+    title: "MOD-RG-002: Auger recombination and doping-dependent SRH lifetimes"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-RG-002
+    acceptance:
+      - "Auger coefficients and lifetime-vs-doping relation for Si with locators; interaction with MOD-RG-001 stated"
+  - id: P2-SPEC-005
+    title: "MOD-STAT-001: Fermi-Dirac statistics and incomplete ionization"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-STAT-001
+    notes: "Fermi integral of order 1/2 and its inverse (state the approximation and its accuracy), ionization energies of common dopants in Si."
+    acceptance:
+      - "Carrier density and quasi-Fermi relations for Fermi-Dirac statistics; dopant ionization model; approximation error bounds"
+  - id: P2-SPEC-006
+    title: "MOD-BGN-001: bandgap narrowing in heavily doped silicon (e.g. Slotboom-type)"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-BGN-001
+    notes: "State how BGN enters n_i,eff and the band edges, and its consistency with the chosen statistics (MOD-STAT-001)."
+    acceptance:
+      - "Equations, parameters and consistency notes with locators"
+  - id: P2-SPEC-007
+    title: "MOD-II-001: impact ionization (avalanche generation) in silicon"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-II-001
+    notes: "Candidate: Chynoweth-law coefficients for electrons and holes; define the driving field (along current or parallel field)."
+    acceptance:
+      - "Generation term, coefficients with field ranges and locators, driving-field definition"
+  - id: P2-SPEC-008
+    title: "MOD-BTBT-001: band-to-band tunneling generation (local model)"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-BTBT-001
+    notes: "Candidates: Kane- or Hurkx-type local models. State the limits of a local model."
+    acceptance:
+      - "Generation rate expression, Si parameters, field definition, validity limits with locators"
+  - id: P2-SPEC-009
+    title: "MOD-CON-003: Schottky contacts (thermionic emission boundary condition)"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-CON-003
+    notes: "Barrier height input, surface recombination velocity, Richardson constant source; optional image-force barrier lowering."
+    acceptance:
+      - "Boundary conditions for potential and carriers, parameters with locators, analytic I-V for VER"
+  - id: P2-SPEC-010
+    title: "MOD-CONV-001: convergence strategies for drift-diffusion solves"
+    role: research
+    area: solver
+    type: spec
+    priority: high
+    depends: []
+    spec: MOD-CONV-001
+    notes: >-
+      From the numerics literature (e.g. selberherr-1984 on solving the discretized system):
+      bias continuation and step control, initial guesses, damping, Gummel vs Newton coupling,
+      carrier-density scaling. Each strategy with its source and expected effect.
+    acceptance:
+      - "Ordered list of strategies with triggers, parameters and sources; failure taxonomy for the benchmark"
+  - id: P2-SPEC-011
+    title: "MOD-AC-001: small-signal AC analysis and capacitance extraction"
+    role: research
+    area: solver
+    type: spec
+    depends: []
+    spec: MOD-AC-001
+    notes: "Linearization around a DC point; admittance and capacitance definitions; how DEVSIM's AC solve maps onto them (devsim-manual-2-11 for the API only)."
+    acceptance:
+      - "Definitions of Y/C/G matrices and sign conventions; analytic references for VER-AC-001"
+  - id: P2-SPEC-012
+    title: "MOD-TRAN-001: transient simulation (time integration, displacement current)"
+    role: research
+    area: solver
+    type: spec
+    depends: []
+    spec: MOD-TRAN-001
+    notes: "BDF1/BDF2/trapezoidal schemes, time-step control, terminal current including displacement current."
+    acceptance:
+      - "Schemes, step control and error estimates with sources; analytic references for VER-TRAN-001"
+  - id: P2-SPEC-013
+    title: "MOD-QM-001 (scoping): density-gradient quantum correction — feasibility and decision"
+    role: research
+    area: physics
+    type: spec
+    depends: [P2-SPEC-005]
+    spec: MOD-QM-001
+    notes: "Summarize the model, its extra equations and boundary conditions, and the effort; recommend implement-now or defer. Human decides."
+    acceptance:
+      - "Scoping spec with sources and a recommendation; label status:needs-human for the decision"
+
+  # ── research: material sets ─────────────────────────────────────────────────
+  - id: P2-MAT-001
+    title: "Material sets: Ge and GaAs (basic parameters needed by the phase-2 models)"
+    role: research
+    area: materials
+    type: spec
+    depends: []
+    acceptance:
+      - "specs/materials/MAT-GE-001.md, MAT-GAAS-001.md and YAML files with sources, locators, status extracted"
+  - id: P2-MAT-002
+    title: "Material set: 4H-SiC (incl. dopant ionization energies, anisotropy notes)"
+    role: research
+    area: materials
+    type: spec
+    depends: [P2-SPEC-005]
+    acceptance:
+      - "MAT-SIC4H-001 spec and YAML; anisotropic quantities flagged with the direction they refer to"
+  - id: P2-MAT-003
+    title: "Insulators: Si3N4, Al2O3, HfO2 permittivity, band gap and band offsets to Si"
+    role: research
+    area: materials
+    type: spec
+    depends: []
+    acceptance:
+      - "YAML files with sources and locators; thin-film vs bulk values distinguished"
+
+  # ── implementation ──────────────────────────────────────────────────────────
+  - id: P2-MOB-001
+    title: "Masetti mobility model"
+    role: implement
+    area: physics
+    type: feature
+    priority: high
+    depends: [P2-SPEC-001]
+    spec: MOD-MOB-001
+    acceptance:
+      - "physics/mobility.py registers mobility.masetti; edge mobility per MOD-MOB-001; unit tests"
+  - id: P2-MOB-002
+    title: "High-field velocity saturation"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-002, P2-MOB-001]
+    spec: MOD-MOB-002
+    acceptance:
+      - "Driving force and derivatives per spec; converges in the VER-MOB-002 resistor up to the spec's field range"
+  - id: P2-MOB-003
+    title: "Surface mobility degradation"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-003, P2-MOB-001, P1-DD-002]
+    spec: MOD-MOB-003
+    acceptance:
+      - "Normal-field evaluation at semiconductor/insulator interfaces per spec; unit tests"
+  - id: P2-RG-001
+    title: "Auger recombination and doping-dependent lifetimes"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-004]
+    spec: MOD-RG-002
+    acceptance:
+      - "Registered models; composable with SRH; unit tests"
+  - id: P2-STAT-001
+    title: "Fermi-Dirac statistics and incomplete ionization"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-005]
+    spec: MOD-STAT-001
+    acceptance:
+      - "Selectable statistics per region; Boltzmann results unchanged when FD is off (VER-PN-001 still passes)"
+  - id: P2-BGN-001
+    title: "Bandgap narrowing"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-006, P2-STAT-001]
+    spec: MOD-BGN-001
+    acceptance:
+      - "n_i,eff and band edges per spec; unit tests"
+  - id: P2-II-001
+    title: "Impact ionization generation"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-007]
+    spec: MOD-II-001
+    acceptance:
+      - "Generation term with derivatives; avalanche I-V of a 1D junction runs with P2-CONV-001 strategies once available"
+  - id: P2-BTBT-001
+    title: "Band-to-band tunneling generation"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-008]
+    spec: MOD-BTBT-001
+    acceptance:
+      - "Registered model with derivatives; unit tests"
+  - id: P2-CON-001
+    title: "Schottky contacts"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P2-SPEC-009]
+    spec: MOD-CON-003
+    acceptance:
+      - "Contact type selectable in the project schema; unit tests"
+  - id: P2-CONV-001
+    title: "Convergence strategies in the solver (automatic retries, continuation, damping)"
+    role: implement
+    area: solver
+    type: feature
+    priority: high
+    depends: [P2-SPEC-010, P1-SOLVER-001]
+    spec: MOD-CONV-001
+    acceptance:
+      - "Strategy chain per MOD-CONV-001, recorded in the run log; benchmark success rate reported by VER-CONV-001"
+  - id: P2-AC-001
+    title: "Small-signal AC analysis and C-V/Y-parameter extraction"
+    role: implement
+    area: solver
+    type: feature
+    depends: [P2-SPEC-011, P1-SWEEP-001, P2-SCHEMA-001]
+    spec: MOD-AC-001
+    acceptance:
+      - "AC sweeps from the project file; results tables with units"
+  - id: P2-TRAN-001
+    title: "Transient simulation"
+    role: implement
+    area: solver
+    type: feature
+    depends: [P2-SPEC-012, P1-SWEEP-001, P2-SCHEMA-001]
+    spec: MOD-TRAN-001
+    acceptance:
+      - "Time-dependent bias waveforms; terminal currents incl. displacement current; step control per spec"
+  - id: P2-DOE-001
+    title: "Parameter sweeps / design of experiments: run a grid of projects in parallel workers"
+    role: implement
+    area: solver
+    type: feature
+    depends: [P1-RUN-001, P1-SWEEP-001, P2-SCHEMA-001]
+    acceptance:
+      - "Grid and list designs over any project parameter; N parallel worker processes; one results table"
+  - id: P2-MATDB-001
+    title: "Material DB v2: temperature-dependent parameter functions and user overrides with provenance"
+    role: implement
+    area: materials
+    type: feature
+    depends: [P1-SCHEMA-001]
+    acceptance:
+      - "Parameter expressions of T (as specified in MAT specs); project-level overrides recorded as user-input in run.yaml"
+  - id: P2-DEV-001
+    title: "2D MOSFET device template with Id-Vg and Id-Vd sweeps"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P1-MOS-001, P1-DOP-001, P2-MOB-001, P2-MOB-002, P2-MOB-003]
+    acceptance:
+      - "Parameterized nMOS/pMOS template (gate length, oxide thickness, junction depth, doping); example project"
+
+  # ── verification ────────────────────────────────────────────────────────────
+  - id: P2-VER-001
+    title: "VER-MOB-001: Masetti mobility reproduces the source"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-001]
+    acceptance:
+      - "L2 check at the source's tabulated/plotted points with stated reading uncertainty; L1 limits"
+  - id: P2-VER-002
+    title: "VER-MOB-002: drift velocity vs field in a uniform resistor"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-002]
+    acceptance:
+      - "Simulated v(E) vs the model's closed form within discretization error; saturation velocity limit"
+  - id: P2-VER-003
+    title: "VER-MOB-003: effective mobility vs effective normal field"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-003]
+    acceptance:
+      - "Extracted effective mobility of a long-channel device vs the spec's reference curve"
+  - id: P2-VER-004
+    title: "VER-RG-002: Auger and lifetime models"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-004]
+    acceptance:
+      - "Uniform-sample lifetimes vs closed form across doping and injection"
+  - id: P2-VER-005
+    title: "VER-STAT-001: Fermi-Dirac and incomplete ionization"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-005]
+    acceptance:
+      - "Boltzmann limit, degenerate densities vs an independent Fermi-integral evaluation, ionized fraction vs closed form"
+  - id: P2-VER-006
+    title: "VER-BGN-001: n_i,eff vs doping"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-006]
+    acceptance:
+      - "Equilibrium np product in uniformly doped samples vs the spec"
+  - id: P2-VER-007
+    title: "VER-II-001: avalanche breakdown of abrupt junctions"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-007]
+    acceptance:
+      - "Breakdown voltage from the ionization integral (independent evaluation) vs simulation; published comparison if available"
+  - id: P2-VER-008
+    title: "VER-BTBT-001: tunneling generation at uniform field"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-008]
+    acceptance:
+      - "Generation rate vs closed form in a uniform-field structure"
+  - id: P2-VER-009
+    title: "VER-CON-001: Schottky diode I-V vs thermionic-emission theory"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-009]
+    acceptance:
+      - "Saturation current and ideality within tolerances derived in the spec"
+  - id: P2-VER-010
+    title: "VER-CONV-001: convergence benchmark suite (target >= 95 % success)"
+    role: verify
+    area: verification
+    type: verification
+    priority: high
+    depends: [P2-SPEC-010]
+    acceptance:
+      - "benchmarks/convergence/ with >= 20 hard cases (high doping, high reverse bias, low current, MOS inversion, avalanche)"
+      - "CI job reports success rate and run time; a drop blocks merges"
+  - id: P2-VER-011
+    title: "VER-AC-001: junction and MOS capacitance from AC analysis"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-011]
+    acceptance:
+      - "Depletion capacitance vs analytic; MOS HF/LF C-V vs VER-MOS-001 references; AC vs quasi-static dQ/dV agreement"
+  - id: P2-VER-012
+    title: "VER-TRAN-001: transient checks"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-012]
+    acceptance:
+      - "Dielectric relaxation / RC-type responses vs closed form; steady state equals the DC solution; time-step convergence"
+  - id: P2-VER-013
+    title: "VER-MOSFET-001: long-channel MOSFET vs charge-sheet/square-law limits"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P2-SPEC-003, P1-SPEC-004]
+    acceptance:
+      - "Threshold voltage and linear-region transconductance vs theory with the simulated mobility"
+  - id: P2-VER-014
+    title: "L3 cross-code comparison of a PN diode and a MOS capacitor"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P1-GATE]
+    notes: "Use an independent open-source simulator whose licence allows running it; compare results only, never copy code."
+    acceptance:
+      - "reports/verification/L3-001.md with inputs, both results and the differences explained"
+
+  # ── design / architecture ───────────────────────────────────────────────────
+  - id: P2-SCHEMA-001
+    title: "Project schema v2: per-region physics selection, AC/transient/DOE sections, v1 migration"
+    role: design
+    area: infra
+    type: design
+    priority: high
+    depends: [P1-SCHEMA-001]
+    acceptance:
+      - "Schema + JSON Schema + migration of v1 files + ADR; examples updated"
+  - id: P2-DES-001
+    title: "Physics setup panel: models per region with citations and status"
+    role: design
+    area: gui
+    type: design
+    depends: [P1-DES-005, P2-SCHEMA-001]
+    acceptance:
+      - "Choose models from physics.available(); parameters show source/locator/status; edits round-trip through the project file"
+  - id: P2-DES-002
+    title: "Material editor with provenance, user overrides and conflict display"
+    role: design
+    area: gui
+    type: design
+    depends: [P2-MATDB-001]
+    acceptance:
+      - "User overrides marked as user-input; conflicts show all candidates; nothing edits data/ files"
+  - id: P2-DES-003
+    title: "Convergence assistant: failing bias point, strategy log, suggested next steps"
+    role: design
+    area: gui
+    type: design
+    depends: [P2-CONV-001, P1-DES-004]
+    acceptance:
+      - "Shows the strategy chain from the run log; one-click retry with the suggested setting"
+  - id: P2-DES-004
+    title: "AC and transient result views"
+    role: design
+    area: gui
+    type: design
+    depends: [P2-AC-001, P2-TRAN-001, P1-DES-003]
+    acceptance:
+      - "C-V/G-V and Y-parameter plots; time-domain plots; export CSV/PNG"
+  - id: P2-DES-005
+    title: "DOE / sweep manager UI"
+    role: design
+    area: gui
+    type: design
+    depends: [P2-DOE-001]
+    acceptance:
+      - "Define grids, watch the run queue, compare results in tables and overlays"
+  - id: P2-DES-006
+    title: "MOSFET tutorial and example gallery"
+    role: design
+    area: docs
+    type: design
+    depends: [P2-DEV-001, P2-DES-001]
+    acceptance:
+      - "docs/tutorials/mosfet.md with screenshots; examples/ projects for diode, MOS-C, MOSFET, Schottky diode"
+  - id: P2-GATE
+    title: "Phase 2 gate report"
+    role: verify
+    area: verification
+    type: verification
+    depends: []
+    depends_on_phase: 2   # bootstrap_github.py expands this to every other phase-2 item
+    acceptance:
+      - "reports/verification/phase-2.md: all phase-2 VER specs pass, convergence benchmark >= 95 %, check_citations --strict passes"
+      - "Label status:needs-human for sign-off"

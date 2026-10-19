@@ -1,0 +1,28 @@
+# Python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+build/
+dist/
+
+# Agents: worktrees, orchestrator state, local settings
+.claude/worktrees/
+.claude/settings.local.json
+.orchestrator/
+
+# Copyrighted source documents stay local (docs/literature-policy.md §5)
+literature/pdfs/*
+!literature/pdfs/.gitkeep
+
+# Simulation outputs and CI artifacts
+runs/
+reports/junit*.xml
+snapshots/
+
+# Secrets
+.env
+.env.*

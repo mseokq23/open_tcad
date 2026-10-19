@@ -1,0 +1,124 @@
+# Silicon material parameters. Rules: docs/literature-policy.md
+#   status: needs-source | extracted | checked | conflict
+#   extracted -> one agent read the value at `locator` in `source`
+#   checked   -> a second, independent reader (verifier) confirmed it (two-key rule)
+# Units are cm-based (DEVSIM convention in this project) unless stated.
+schema: opentcad.material/v1
+id: Si
+name: Silicon
+class: semiconductor
+parameters:
+  bandgap_300K:
+    symbol: E_g
+    value: 1.12
+    unit: eV
+    conditions: {T: "300 K"}
+    source: ioffe-nsm-si-bandstr
+    locator: "Value listed as 'Energy gap' (300 K)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+
+  intrinsic_carrier_density_300K:
+    symbol: n_i
+    value: 1.0e10
+    unit: cm^-3
+    conditions: {T: "300 K"}
+    source: ioffe-nsm-si-bandstr
+    locator: "Value listed as 'Intrinsic carrier concentration' (300 K)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+    notes: >-
+      Several modern references give a lower value near 300 K. Treat as a
+      bootstrap value; backlog item P1-MAT-002 re-derives n_i from a primary source.
+
+  effective_dos_conduction_300K:
+    symbol: N_c
+    value: 3.2e19
+    unit: cm^-3
+    conditions: {T: "300 K"}
+    source: ioffe-nsm-si-bandstr
+    locator: "Value listed as 'Effective conduction band density of states' (300 K)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+
+  effective_dos_valence_300K:
+    symbol: N_v
+    value: 1.8e19
+    unit: cm^-3
+    conditions: {T: "300 K"}
+    source: ioffe-nsm-si-bandstr
+    locator: "Value listed as 'Effective valence band density of states' (300 K)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+
+  bandgap_T_E0:
+    symbol: E_g0
+    value: 1.17
+    unit: eV
+    source: ioffe-nsm-si-bandstr
+    locator: "Expression given for the temperature dependence of the energy gap (constant term)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+    notes: "Form E_g(T) = E_g0 - alpha*T^2/(T + beta). The page does not name the form; spec MAT-SI-001 must cite the primary source."
+
+  bandgap_T_alpha:
+    symbol: alpha_Eg
+    value: 4.73e-4
+    unit: eV/K
+    source: ioffe-nsm-si-bandstr
+    locator: "Expression given for the temperature dependence of the energy gap (coefficient of the T^2 term)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+
+  bandgap_T_beta:
+    symbol: beta_Eg
+    value: 636.0
+    unit: K
+    source: ioffe-nsm-si-bandstr
+    locator: "Expression given for the temperature dependence of the energy gap (temperature constant in the denominator)"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+
+  effective_dos_conduction_prefactor:
+    symbol: N_c0
+    value: 6.2e15
+    unit: cm^-3 K^-1.5
+    source: ioffe-nsm-si-bandstr
+    locator: "Expression given for the temperature dependence of the effective conduction band density of states (prefactor of T^(3/2))"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+
+  effective_dos_valence_prefactor:
+    symbol: N_v0
+    value: 3.5e15
+    unit: cm^-3 K^-1.5
+    source: ioffe-nsm-si-bandstr
+    locator: "Expression given for the temperature dependence of the effective valence band density of states (prefactor of T^(3/2))"
+    status: extracted
+    extracted_by: bootstrap
+    checked_by: []
+
+  relative_permittivity:
+    symbol: eps_r
+    value: null
+    unit: "1"
+    status: needs-source
+    candidates:
+      - value: 11.7
+        source: ioffe-nsm-si-basic
+        note: "Commonly quoted from the Ioffe 'Basic parameters' page; page not machine-readable here."
+      - value: 11.9
+        source: sze-ng-2007
+        note: "Commonly quoted textbook value; locator (table/page) not yet verified."
+    notes: >-
+      Sources disagree. Backlog item P1-MAT-001 resolves this from a primary measurement
+      source with an exact locator. Until then, simulations must pass an explicit,
+      caller-owned value (see MaterialDB.value(..., override=...)).

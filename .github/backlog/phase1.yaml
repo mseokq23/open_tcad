@@ -1,0 +1,291 @@
+# Phase 1 backlog — MVP: 2D devices end-to-end, verified. Exit criteria: docs/roadmap.md.
+# Fields: id, title, role, area, type, priority?, depends (ids), depends_on_phase?, spec?, notes?,
+#         acceptance (list).
+# scripts/bootstrap_github.py turns each item into a GitHub issue (idempotent via Backlog-ID).
+schema: opentcad.backlog/v1
+phase: 1
+milestone: "Phase 1"
+items:
+  # ── research ────────────────────────────────────────────────────────────────
+  - id: P1-SPEC-001
+    title: "Bootstrap specs: exact locators for MOD-DD-001, MOD-RG-001, MOD-MOB-000, MOD-DOP-001"
+    role: research
+    area: physics
+    type: spec
+    priority: high
+    depends: []
+    spec: MOD-DD-001
+    notes: >-
+      Read selberherr-1984, scharfetter-gummel-1969, shockley-read-1952, hall-1952 (and
+      sze-ng-2007 for contacts and step junctions). Replace every TBD locator with equation/section
+      numbers and add Source/Locator tables where a spec has none. Note any sign-convention
+      differences between the sources and the code in "Open questions".
+    acceptance:
+      - "No TBD remains in the four bootstrap specs; every equation has a source and locator"
+      - "Review log has a researcher entry; check_citations.py passes (bootstrap flag stays until P1-VER-001)"
+  - id: P1-MAT-001
+    title: "Resolve silicon relative permittivity (currently needs-source)"
+    role: research
+    area: materials
+    type: spec
+    priority: high
+    depends: []
+    notes: >-
+      Find the primary measurement source (or an authoritative compilation that cites it) and
+      record value, uncertainty, temperature and exact locator. If credible sources disagree,
+      set status conflict with all candidates and ask the human.
+    acceptance:
+      - "silicon.yaml relative_permittivity is extracted (or conflict + status:needs-human)"
+      - "New references created with scripts/doi_lookup.py"
+  - id: P1-MAT-002
+    title: "MAT-SI-001: primary sources for Si band gap, Nc, Nv and n_i(T)"
+    role: research
+    area: materials
+    type: spec
+    depends: []
+    notes: >-
+      Write specs/materials/MAT-SI-001.md. Replace the Ioffe pointer entries with primary
+      sources where possible; document the chosen n_i(300 K) and why.
+    acceptance:
+      - "MAT-SI-001 spec with sources and locators for every Si parameter in use"
+      - "materials DB consistency tests still pass (tests/unit/test_materials_db.py)"
+  - id: P1-MAT-003
+    title: "SiO2 parameter set for MOS structures"
+    role: research
+    area: materials
+    type: spec
+    depends: []
+    notes: "Relative permittivity, band gap, electron affinity (if needed for work-function differences)."
+    acceptance:
+      - "src/opentcad/data/materials/sio2.yaml with sources, locators, status extracted"
+  - id: P1-SPEC-002
+    title: "MOD-DOP-002: analytic Gaussian and erfc doping profiles"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-DOP-002
+    acceptance:
+      - "Profile definitions with parameters (peak or dose, projected range, straggle, junction depth), units and sources"
+      - "Verification plan: dose integral, junction depth"
+  - id: P1-SPEC-003
+    title: "MOD-MESH-001: mesh quality requirements for box-method finite volumes on triangles"
+    role: research
+    area: mesh
+    type: spec
+    depends: []
+    spec: MOD-MESH-001
+    notes: "Delaunay/obtuse-angle conditions for positive edge couplings, refinement near junctions (Debye length), interface handling."
+    acceptance:
+      - "Quantitative quality criteria the mesher can check automatically, with sources"
+  - id: P1-SPEC-004
+    title: "MOD-CON-002: gate contacts, insulator regions and ideal MOS electrostatics"
+    role: research
+    area: physics
+    type: spec
+    depends: []
+    spec: MOD-CON-002
+    notes: "Metal work function boundary condition, Poisson-only insulators, flat-band and threshold voltage, low/high-frequency C-V of an ideal MOS capacitor."
+    acceptance:
+      - "Equations with locators sufficient for VER-MOS-001"
+
+  # ── implementation ──────────────────────────────────────────────────────────
+  # P1-IO-001 and P1-SOLVER-001 have no dependencies so the implementer is busy from day 1.
+  - id: P1-IO-001
+    title: "Results I/O: run.yaml, iv.csv and VTU field files for the 1D diode"
+    role: implement
+    area: solver
+    type: feature
+    priority: high
+    depends: []
+    acceptance:
+      - "opentcad.io writes runs/<id>/run.yaml (inputs, package/DEVSIM/MKL versions, git hash), iv.csv (bias, current per contact, units in the header) and fields/*.vtu"
+      - "`opentcad demo-diode --out runs/` uses it; unit tests read the files back"
+  - id: P1-SOLVER-001
+    title: "Solver diagnostics: structured convergence failures with bias point and error history"
+    role: implement
+    area: solver
+    type: feature
+    depends: []
+    acceptance:
+      - "ConvergenceError carries contact, bias, step, iteration count and the last absolute/relative errors"
+      - "Per-solve iteration log captured (for the GUI log and run folders); no change to converged results (VER-PN-001 still passes)"
+      - "KI-006 follow-up: measure extended vs double precision cost on a 2D mesh and record when double is safe (e.g. a terminal-current balance check after each solve)"
+  - id: P1-MESH-001
+    title: "Gmsh 2D structure-to-mesh pipeline (separate process, ADR-0004)"
+    role: implement
+    area: mesh
+    type: feature
+    depends: [P1-SPEC-003, P1-SCHEMA-001]
+    spec: MOD-MESH-001
+    acceptance:
+      - "Rectangles/polygons with materials, contacts and interfaces become Gmsh physical groups and DEVSIM regions"
+      - "Mesh quality report implements MOD-MESH-001 checks; no gmsh import in library code"
+  - id: P1-DD-002
+    title: "2D device builder: semiconductor + insulator regions, interfaces, contacts"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P1-MESH-001, P1-SPEC-004]
+    spec: MOD-DD-001
+    acceptance:
+      - "Builds devices from the project schema; insulators solve Poisson only; potential continuous across interfaces"
+  - id: P1-DOP-001
+    title: "Gaussian/erfc profiles and 1D profile import"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P1-SPEC-002]
+    spec: MOD-DOP-002
+    acceptance:
+      - "Profiles registered in the model registry; CSV depth profiles interpolated; unit tests"
+  - id: P1-RUN-001
+    title: "Worker-process runner: one simulation per process, progress events, runs/<id>/ outputs"
+    role: implement
+    area: solver
+    type: feature
+    priority: high
+    depends: [P1-SCHEMA-001, P1-IO-001]
+    acceptance:
+      - "Runs a project file in a subprocess; JSON-lines progress on stdout; cancel support"
+      - "runs/<id>/ holds run.yaml (inputs, versions, git hash), iv.csv, fields/*.vtu, log.txt"
+  - id: P1-SWEEP-001
+    title: "Sweep definitions and `opentcad run project.yaml`"
+    role: implement
+    area: solver
+    type: feature
+    depends: [P1-RUN-001]
+    acceptance:
+      - "Multi-contact bias sweeps (range/list), results tables, CLI command with exit codes"
+  - id: P1-MOS-001
+    title: "MOS capacitor builder and quasi-static C-V"
+    role: implement
+    area: physics
+    type: feature
+    depends: [P1-DD-002, P1-MAT-003]
+    spec: MOD-CON-002
+    acceptance:
+      - "1D and 2D MOS capacitor from the schema; gate contact per MOD-CON-002; C = dQ/dV extraction"
+
+  # ── verification ────────────────────────────────────────────────────────────
+  - id: P1-VER-001
+    title: "Independent review of the four bootstrap specs against their sources"
+    role: verify
+    area: verification
+    type: verification
+    priority: high
+    depends: [P1-SPEC-001]
+    acceptance:
+      - "Every equation re-read blind from the source; `bootstrap: true` removed; MOD-DD-001, MOD-MOB-000, MOD-DOP-001 verified via VER-PN-001; MOD-RG-001 stays implemented until VER-RG-001"
+      - "VER-PN-001 re-checked independently: closed forms in verification/analytic.py re-derived from sze-ng-2007 with locators, tolerances re-justified"
+  - id: P1-VER-002
+    title: "Two-key check of constants and bootstrap Si parameters"
+    role: verify
+    area: materials
+    type: verification
+    priority: high
+    depends: []
+    acceptance:
+      - "Each extracted value re-read with the source-checker subagent (blind); status checked or a documented mismatch"
+  - id: P1-VER-003
+    title: "VER-RG-001: SRH generation/recombination checks"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P1-SPEC-001]
+    acceptance:
+      - "Reverse generation current vs q*n_i*W/(2*tau) and low-bias ideality trend, with tolerance rationale"
+  - id: P1-VER-004
+    title: "VER-PN-002: 2D laterally uniform junction reproduces the 1D results"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P1-SCHEMA-001, P1-SPEC-003]
+    acceptance:
+      - "Tests written from VER-PN-001 + schema; skip until the 2D builder is registered; 0.5 % agreement target"
+  - id: P1-VER-005
+    title: "VER-MOS-001: ideal MOS capacitor C-V versus theory"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P1-SPEC-004, P1-SCHEMA-001]
+    acceptance:
+      - "Flat-band, threshold and LF/HF C-V checks with tolerances; skip until MOS builder exists"
+  - id: P1-VER-006
+    title: "VER-MESH-001: mesh quality and mesh-convergence tests"
+    role: verify
+    area: verification
+    type: verification
+    depends: [P1-SPEC-003]
+    acceptance:
+      - "Automatic quality checks on generated meshes; convergence study of VER-PN-002 quantities"
+
+  # ── design / architecture ───────────────────────────────────────────────────
+  - id: P1-SCHEMA-001
+    title: "Project schema v1 (pydantic) + JSON Schema + example projects + ADR"
+    role: design
+    area: infra
+    type: design
+    priority: high
+    depends: []
+    acceptance:
+      - "Structure, materials, doping, mesh, physics, simulation and output sections; validation errors are readable"
+      - "Examples: 1D diode (matches VER-PN-001), 2D diode, MOS capacitor; a new ADR records the schema decisions"
+  - id: P1-DES-001
+    title: "GUI theme tokens, status badges and layout persistence"
+    role: design
+    area: gui
+    type: design
+    depends: []
+    acceptance:
+      - "gui/theme.py tokens per docs/design-guide.md; status badge widget; snapshot baseline committed"
+  - id: P1-DES-002
+    title: "Structure editor v1 bound to the project schema"
+    role: design
+    area: gui
+    type: design
+    depends: [P1-SCHEMA-001, P1-DES-001]
+    acceptance:
+      - "Draw/edit rectangles with materials, contacts on edges, undo/redo; edits round-trip through the project file"
+  - id: P1-DES-003
+    title: "Results viewer v1: I-V plots and 2D field maps with cutlines"
+    role: design
+    area: gui
+    type: design
+    depends: [P1-RUN-001, P1-DES-001]
+    acceptance:
+      - "Log-scale I-V from iv.csv; field maps from VTU; cutline tool; snapshot tests"
+  - id: P1-DES-004
+    title: "Run panel: start/cancel via the worker, live log and progress"
+    role: design
+    area: gui
+    type: design
+    depends: [P1-RUN-001, P1-DES-001]
+    acceptance:
+      - "GUI never imports DEVSIM; runs survive GUI errors; run history list"
+  - id: P1-DES-005
+    title: "Model and material browser with citations and status badges"
+    role: design
+    area: gui
+    type: design
+    depends: [P1-DES-001]
+    acceptance:
+      - "Lists physics.available() and MaterialDB parameters with source, locator, status; DOI links"
+  - id: P1-DOC-001
+    title: "Phase 1 tutorial: 2D PN diode from the GUI and from the CLI"
+    role: design
+    area: docs
+    type: design
+    depends: [P1-DES-002, P1-DES-003, P1-DES-004, P1-SWEEP-001]
+    acceptance:
+      - "docs/tutorials/2d-pn-diode.md with screenshots; architecture doc updated"
+  - id: P1-GATE
+    title: "Phase 1 gate report"
+    role: verify
+    area: verification
+    type: verification
+    depends: []
+    depends_on_phase: 1   # bootstrap_github.py expands this to every other phase-1 item
+    acceptance:
+      - "reports/verification/phase-1.md: every phase-1 VER spec passing, parameter statuses, open risks"
+      - "Label status:needs-human for sign-off"

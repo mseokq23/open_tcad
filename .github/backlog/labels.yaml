@@ -1,0 +1,35 @@
+# Labels used by the agent workflow (docs/agent-workflow.md). Created by scripts/bootstrap_github.py.
+labels:
+  - {name: "role:research",      color: "1d76db", description: "Researcher: specs, sources, material data"}
+  - {name: "role:implement",     color: "0e8a16", description: "Implementer: model code and unit tests"}
+  - {name: "role:verify",        color: "d93f0b", description: "Verifier: verification specs/tests, PR reviews, two-key checks"}
+  - {name: "role:design",        color: "5319e7", description: "Designer: GUI, architecture, docs, backlog"}
+  - {name: "status:ready",       color: "c2e0c6", description: "Can be picked up once dependencies are closed"}
+  - {name: "status:in-progress", color: "fbca04", description: "Claimed by an agent session"}
+  - {name: "status:review",      color: "bfdadc", description: "PR open, waiting for review"}
+  - {name: "status:blocked",     color: "b60205", description: "Blocked by something outside the role"}
+  - {name: "status:needs-human", color: "e11d21", description: "Needs a human decision or a document"}
+  - {name: "review:verify",      color: "f9d0c4", description: "PR waits for the verifier"}
+  - {name: "review:changes",     color: "e99695", description: "Reviewer requested changes; author role re-dispatched"}
+  - {name: "review:approved",    color: "0e8a16", description: "Verifier approved; human may merge after green CI"}
+  - {name: "review:human",       color: "d4c5f9", description: "Verifier-authored PR; human reviews and merges"}
+  - {name: "phase:1",            color: "ededed", description: "Phase 1: MVP, 2D devices end-to-end"}
+  - {name: "phase:2",            color: "ededed", description: "Phase 2: model library and convergence"}
+  - {name: "priority:high",      color: "b60205", description: "Dispatched before other ready items"}
+  - {name: "area:physics",       color: "c5def5", description: ""}
+  - {name: "area:materials",     color: "c5def5", description: ""}
+  - {name: "area:mesh",          color: "c5def5", description: ""}
+  - {name: "area:solver",        color: "c5def5", description: ""}
+  - {name: "area:gui",           color: "c5def5", description: ""}
+  - {name: "area:verification",  color: "c5def5", description: ""}
+  - {name: "area:infra",         color: "c5def5", description: ""}
+  - {name: "area:docs",          color: "c5def5", description: ""}
+  - {name: "type:spec",          color: "fef2c0", description: ""}
+  - {name: "type:feature",       color: "fef2c0", description: ""}
+  - {name: "type:verification",  color: "fef2c0", description: ""}
+  - {name: "type:design",        color: "fef2c0", description: ""}
+  - {name: "type:bug",           color: "fef2c0", description: ""}
+  - {name: "type:planning",      color: "fef2c0", description: ""}
+milestones:
+  - {title: "Phase 1", description: "MVP: 2D PN diode and MOS capacitor end-to-end from the GUI, verified"}
+  - {title: "Phase 2", description: "Model library, material sets, convergence automation, AC/transient, DOE"}
